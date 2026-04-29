@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Age-Gender-Emotion Detection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js" defer></script>
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <!-- Popup Modal (appears before detection starts) -->
+  <div id="notice-modal" class="modal">
+    <div class="modal-content">
+      <h2>⚠️ Important Notice</h2>
+      <p>For genuine results, please follow these guidelines:</p>
+      <ul>
+        <li>Use clear, front-facing images.</li>
+        <li>Be in your <strong>true, original mood</strong>.</li>
+        <li>Avoid acting or exaggerating emotions to get genuine results.</li>
+        <li>Ensure proper lighting for clarity.</li>
+      </ul>
+      <label>
+        <input type="checkbox" id="dont-show-again"> Don't show again
+      </label>
+      <br><br>
+      <button onclick="closeNotice()">I Understand</button>
+    </div>
+  </div>
+
+  <div class="video-background">
+  <video autoplay muted loop class="bg-video">
+    <source src="{{ url_for('static', filename='DNAhelix.mp4') }}" type="video/mp4">
+  </video>
+  <video autoplay muted loop class="bg-video">
+    <source src="{{ url_for('static', filename='bg.mp4') }}" type="video/mp4">
+  </video>
+  <video autoplay muted loop class="bg-video">
+    <source src="{{ url_for('static', filename='DNAhelix2.mp4') }}" type="video/mp4">
+  </video>
+
+  <!-- Overlay layer -->
+  <div class="video-overlay"></div>
+</div>
+
+  <div class="scene">
+    <div class="header-wrapper">
+      <div class="header-container">
+        <h1 class="header-title">DNA Analyzer</h1>
+        <p class="header-subtitle">Age • Gender • Emotion Detection By Face Recognition</p>
+        <p class="subtitle">Upload an image or use your webcam to analyze faces in real-time.</p>
+      </div>
+    </div>
+    
+    <main class="cards">
+      <section class="card">
+        <h2 class="card-title">Upload Image</h2>
+        <form id="uploadForm" enctype="multipart/form-data">
+          <input type="file" name="image" accept="image/*" required />
+          <button type="submit" onclick="showNotice()" class="btn btn-primary">Detect</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">Live Webcam</h2>
+        <button id="toggleBtn" class="btn btn-secondary">Start Webcam</button>
+        <div id="camera" style="display:none;"></div>
+        <button id="captureBtn" onclick="showNotice()" class="btn btn-accent" style="display:none;">Capture & Detect</button>
+      </section>
+
+      <section class="card">
+        <h2 class="card-title">Results</h2>
+        <div id="results"></div>
+      </section>
+    </main>
+  </div>
+  <!-- Static Notice Box (always visible under header) -->
+  <div class="header-wrapper"><center>
+    <div class="notice-container">
+      <h2>⚠️ Important Notice</h2>
+      <p>
+        Predictions are generated using AI models trained on publicly available datasets. 
+        Results are probabilistic estimates, not absolute truths.
+      </p>
+      <ul>
+        <li>Upload clear, well-lit images with unobstructed faces.</li>
+        <li>Ensure the face is front-facing and visible.</li>
+        <li>Be in your <strong>true, original mood</strong> — acting or exaggerating emotions may reduce accuracy.</li>
+        <li>Use stable lighting for webcam detection.</li>
+        <li>Interpret results responsibly; this app is for educational/entertainment purposes only.</li>
+      </ul>
+    </div></center>
+  </div>
+  <!-- Main UI logic (regular script; depends on webcam.js and DOM) -->
+  <script defer>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggleBtn = document.getElementById('toggleBtn');
+      const cameraEl = document.getElementById('camera');
+      const captureBtn = document.getElementById('captureBtn');
+      const resultsEl = document.getElementById('results');
+      const uploadForm = document.getElementById('uploadForm');
+      let webcamActive = false;
+
+      toggleBtn.addEventListener('click', () => {
+        if (!webcamActive) {
+          Webcam.set({ width: 320, height: 240, image_format: 'jpeg', jpeg_quality: 90 });
+          Webcam.attach('#camera');
+          cameraEl.style.display = 'block';
+          captureBtn.style.display = 'inline-block';
+          toggleBtn.textContent = 'Stop Webcam';
+          webcamActive = true;
+        } else {
+          Webcam.reset();
+          cameraEl.style.display = 'none';
+          captureBtn.style.display = 'none';
+          toggleBtn.textContent = 'Start Webcam';
+          webcamActive = false;
+        }
+      });
+
+      captureBtn.addEventListener('click', async () => {
+        if (!webcamActive) return;
+        Webcam.snap(async (data_uri) => {
+          try {
+            const blob = await (await fetch(data_uri)).blob();
+            const formData = new FormData();
+            formData.append('image', blob, 'webcam.jpg');
+            const res = await fetch('/detect', { method: 'POST', body: formData });
+            if (!res.ok) throw new Error(`Server returned ${res.status}`);
+            const imgBlob = await res.blob();
+            const url = URL.createObjectURL(imgBlob);
+            resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" />`;
+            // Optionally call onEmotionDetected if server returns emotion in headers or JSON
+            // Example: const json = await res.json(); if (json.emotion) window.onEmotionDetected(json.emotion);
+          } catch (err) {
+            console.error(err);
+          }
+        });
+      });
+
+      uploadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const formData = new FormData(uploadForm);
+        try {
+          const res = await fetch('/detect', { method: 'POST', body: formData });
+          if (!res.ok) throw new Error(`Server returned ${res.status}`);
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" />`;
+        } catch (err) {
+          console.error(err);
+        }
+      });
+    });
+    // Show modal before detection
+    function showNotice() {
+      if (!localStorage.getItem("skipNotice")) {
+        document.getElementById("notice-modal").style.display = "block";
+      }
+    }
+    
+    function closeNotice() {
+      if (document.getElementById("dont-show-again").checked) {
+        localStorage.setItem("skipNotice", "true");
+      }
+      document.getElementById("notice-modal").style.display = "none";
+    }
+  </script>
+</body>
+</html>
