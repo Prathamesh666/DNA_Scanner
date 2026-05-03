@@ -3,6 +3,6 @@ numpy
 opencv-python
 opencv-contrib-python
 opencv-python-headless
-tensorflow
+tensorflow==2.21.0
 deepface
 tf_keras
