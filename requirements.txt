@@ -1,9 +1,10 @@
 flask 
+gunicorn
 numpy 
 opencv-python
 opencv-contrib-python
 opencv-python-headless
+mtcnn
 tensorflow
-tensorflow-cpu
 deepface
 tf_keras

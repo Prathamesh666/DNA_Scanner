@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.26/webcam.min.js" defer></script>
+  <!-- Bootstrap JS Bundle (includes Popper) -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
@@ -75,6 +77,17 @@
         <div id="results"></div>
       </section>
     </main>
+
+    <!-- Bootstrap Modal -->
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-body text-center">
+            <img id="modalImage" src="" class="img-fluid rounded" style="cursor: grab;">
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <!-- Static Notice Box (always visible under header) -->
   <div class="header-wrapper"><center>
@@ -93,6 +106,7 @@
       </ul>
     </div></center>
   </div>
+
   <!-- Main UI logic (regular script; depends on webcam.js and DOM) -->
   <script defer>
     document.addEventListener('DOMContentLoaded', () => {
@@ -131,7 +145,9 @@
             if (!res.ok) throw new Error(`Server returned ${res.status}`);
             const imgBlob = await res.blob();
             const url = URL.createObjectURL(imgBlob);
-            resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" />`;
+            //resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" />`;
+            //resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" class="img-thumbnail" style="cursor: zoom-in;" data-bs-toggle="modal" data-bs-target="#imageModal" data-full="${url}"/>`;
+            showAnalyzedImage(url); // Use the function to display results with zoomable modal
             // Optionally call onEmotionDetected if server returns emotion in headers or JSON
             // Example: const json = await res.json(); if (json.emotion) window.onEmotionDetected(json.emotion);
           } catch (err) {
@@ -148,7 +164,9 @@
           if (!res.ok) throw new Error(`Server returned ${res.status}`);
           const blob = await res.blob();
           const url = URL.createObjectURL(blob);
-          resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" />`;
+          //resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" />`;
+          //resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" class="img-thumbnail" style="cursor: zoom-in;" data-bs-toggle="modal" data-bs-target="#imageModal" data-full="${url}"/>`;
+          showAnalyzedImage(url); // Use the function to display results with zoomable modal
         } catch (err) {
           console.error(err);
         }
@@ -160,13 +178,61 @@
         document.getElementById("notice-modal").style.display = "block";
       }
     }
-    
+
     function closeNotice() {
       if (document.getElementById("dont-show-again").checked) {
         localStorage.setItem("skipNotice", "true");
       }
       document.getElementById("notice-modal").style.display = "none";
     }
+    // Example function to inject analyzed image
+    function showAnalyzedImage(url) {
+      const resultsEl = document.getElementById("results");
+      resultsEl.innerHTML = `
+        <img src="${url}" alt="Detected Faces" class="img-thumbnail"
+            style="cursor: zoom-in;"
+            data-bs-toggle="modal"
+            data-bs-target="#imageModal"
+            data-full="${url}"/>`;
+
+      // Bind click to update modal image
+      const img = resultsEl.querySelector("img");
+      img.addEventListener("click", () => {
+        const modalImage = document.getElementById("modalImage");
+        modalImage.src = img.getAttribute("data-full");
+      });
+    }
+    
+    const modalImage = document.getElementById("modalImage");
+    let scale = 1, originX = 0, originY = 0, isDragging = false, startX, startY;
+    
+    modalImage.addEventListener("wheel", e => {
+      e.preventDefault();
+      scale += e.deltaY * -0.001;
+      scale = Math.min(Math.max(.5, scale), 5); // clamp zoom
+      modalImage.style.transform = `scale(${scale}) translate(${originX}px, ${originY}px)`;
+    });
+    
+    modalImage.addEventListener("mousedown", e => {
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      modalImage.style.cursor = "grabbing";
+    });
+    
+    window.addEventListener("mouseup", () => {
+      isDragging = false;
+      modalImage.style.cursor = "grab";
+    });
+    
+    window.addEventListener("mousemove", e => {
+      if (!isDragging) return;
+      originX += (e.clientX - startX) / scale;
+      originY += (e.clientY - startY) / scale;
+      startX = e.clientX;
+      startY = e.clientY;
+      modalImage.style.transform = `scale(${scale}) translate(${originX}px, ${originY}px)`;
+    });
   </script>
 </body>
 </html>
