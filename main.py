@@ -1,12 +1,11 @@
-from flask import Flask, render_template
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'   # disables oneDNN optimizations
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'   # suppress INFO and WARNING logs
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'   # force CPU, no GPU warnings
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'   # suppress INFO, WARNING, ERROR logs
-
 import warnings
 warnings.filterwarnings("ignore", category=DeprecationWarning)
+from flask import Flask, render_template
 from routes.detect import detect_route
 
 app = Flask(__name__)
