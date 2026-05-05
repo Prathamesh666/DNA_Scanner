@@ -67,6 +67,7 @@
 
       <section class="card">
         <h2 class="card-title">Live Webcam</h2>
+        <video id="camera" autoplay playsinline style="display:none;"></video>
         <button id="toggleBtn" class="btn btn-secondary">Start Webcam</button>
         <div id="camera" style="display:none;"></div>
         <button id="captureBtn" onclick="showNotice()" class="btn btn-accent" style="display:none;">Capture & Detect</button>
@@ -116,45 +117,96 @@
       const resultsEl = document.getElementById('results');
       const uploadForm = document.getElementById('uploadForm');
       let webcamActive = false;
-
-      toggleBtn.addEventListener('click', () => {
+      
+      let stream = null;
+      
+      toggleBtn.addEventListener("click", async () => {
         if (!webcamActive) {
-          Webcam.set({ width: 320, height: 240, image_format: 'jpeg', jpeg_quality: 90 });
-          Webcam.attach('#camera');
-          cameraEl.style.display = 'block';
-          captureBtn.style.display = 'inline-block';
-          toggleBtn.textContent = 'Stop Webcam';
-          webcamActive = true;
+          try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            cameraEl.srcObject = stream;
+            cameraEl.style.display = "block";
+            captureBtn.style.display = "inline-block";
+            toggleBtn.textContent = "Stop Webcam";
+            webcamActive = true;
+          } catch (err) {
+            alert("Camera error: " + err.message);
+          }
         } else {
-          Webcam.reset();
-          cameraEl.style.display = 'none';
-          captureBtn.style.display = 'none';
-          toggleBtn.textContent = 'Start Webcam';
+          if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+          }
+          cameraEl.srcObject = null;
+          cameraEl.style.display = "none";
+          captureBtn.style.display = "none";
+          toggleBtn.textContent = "Start Webcam";
           webcamActive = false;
         }
       });
-
-      captureBtn.addEventListener('click', async () => {
+      
+      captureBtn.addEventListener("click", async () => {
         if (!webcamActive) return;
-        Webcam.snap(async (data_uri) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = cameraEl.videoWidth;
+        canvas.height = cameraEl.videoHeight;
+        canvas.getContext("2d").drawImage(cameraEl, 0, 0);
+      
+        canvas.toBlob(async (blob) => {
+          const formData = new FormData();
+          formData.append("image", blob, "webcam.jpg");
           try {
-            const blob = await (await fetch(data_uri)).blob();
-            const formData = new FormData();
-            formData.append('image', blob, 'webcam.jpg');
-            const res = await fetch('/detect', { method: 'POST', body: formData });
+            const res = await fetch("/detect", { method: "POST", body: formData });
             if (!res.ok) throw new Error(`Server returned ${res.status}`);
             const imgBlob = await res.blob();
             const url = URL.createObjectURL(imgBlob);
-            //resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" />`;
-            //resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" class="img-thumbnail" style="cursor: zoom-in;" data-bs-toggle="modal" data-bs-target="#imageModal" data-full="${url}"/>`;
-            showAnalyzedImage(url); // Use the function to display results with zoomable modal
-            // Optionally call onEmotionDetected if server returns emotion in headers or JSON
-            // Example: const json = await res.json(); if (json.emotion) window.onEmotionDetected(json.emotion);
+            //resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" class="img-thumbnail"/>`;
+            showAnalyzedImage(url);
           } catch (err) {
             console.error(err);
           }
-        });
+        }, "image/jpeg");
       });
+      </script>
+
+
+      //toggleBtn.addEventListener('click', () => {
+      //  if (!webcamActive) {
+      //    Webcam.set({ width: 320, height: 240, image_format: 'jpeg', jpeg_quality: 90 });
+      //    Webcam.attach('#camera');
+      //    cameraEl.style.display = 'block';
+      //    captureBtn.style.display = 'inline-block';
+      //    toggleBtn.textContent = 'Stop Webcam';
+      //    webcamActive = true;
+      //  } else {
+      //    Webcam.reset();
+      //    cameraEl.style.display = 'none';
+      //    captureBtn.style.display = 'none';
+      //    toggleBtn.textContent = 'Start Webcam';
+      //    webcamActive = false;
+      //  }
+      //});
+//
+      //captureBtn.addEventListener('click', async () => {
+      //  if (!webcamActive) return;
+      //  Webcam.snap(async (data_uri) => {
+      //    try {
+      //      const blob = await (await fetch(data_uri)).blob();
+      //      const formData = new FormData();
+      //      formData.append('image', blob, 'webcam.jpg');
+      //      const res = await fetch('/detect', { method: 'POST', body: formData });
+      //      if (!res.ok) throw new Error(`Server returned ${res.status}`);
+      //      const imgBlob = await res.blob();
+      //      const url = URL.createObjectURL(imgBlob);
+      //      //resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" />`;
+      //      //resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" class="img-thumbnail" style="cursor: zoom-in;" data-bs-toggle="modal" data-bs-target="#imageModal" data-full="${url}"/>`;
+      //      showAnalyzedImage(url); // Use the function to display results with zoomable modal
+      //      // Optionally call onEmotionDetected if server returns emotion in headers or JSON
+      //      // Example: const json = await res.json(); if (json.emotion) window.onEmotionDetected(json.emotion);
+      //    } catch (err) {
+      //      console.error(err);
+      //    }
+      //  });
+      //});
 
       uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
