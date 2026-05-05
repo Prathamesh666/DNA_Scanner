@@ -55,10 +55,39 @@ def detect():
         line_height = 12
 
         # Draw each line above the rectangle
-        cv2.putText(img, race_text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
-        cv2.putText(img, emotion_text, (x, y - 10 - line_height), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
-        cv2.putText(img, gender_text, (x, y - 10 - 2 * line_height), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
-        cv2.putText(img, age_text, (x, y - 10 - 3 * line_height), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
+        #cv2.putText(img, race_text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
+        #cv2.putText(img, emotion_text, (x, y - 10 - line_height), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
+        #cv2.putText(img, gender_text, (x, y - 10 - 2 * line_height), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
+        #cv2.putText(img, age_text, (x, y - 10 - 3 * line_height), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
+
+        # Prepare text lines
+        lines = [race_text, emotion_text, gender_text, age_text]
+        
+        for i, text in enumerate(lines):
+            # Compute text position
+            text_x = x
+            text_y = y - 10 - i * line_height
+        
+            # Estimate background box size for text
+            (text_w, text_h), baseline = cv2.getTextSize(text, cv2.FONT_HERSHEY_SIMPLEX, 0.3, 1)
+            box_x1, box_y1 = text_x, text_y - text_h - baseline
+            box_x2, box_y2 = text_x + text_w, text_y + baseline
+        
+            # Clip coordinates to image bounds
+            box_x1 = max(box_x1, 0)
+            box_y1 = max(box_y1, 0)
+            box_x2 = min(box_x2, img.shape[1])
+            box_y2 = min(box_y2, img.shape[0])
+        
+            # Extract ROI and apply Gaussian blur
+            roi = img[box_y1:box_y2, box_x1:box_x2]
+            if roi.size > 0:
+                blurred_roi = cv2.GaussianBlur(roi, (9, 9), 0)
+                img[box_y1:box_y2, box_x1:box_x2] = blurred_roi
+        
+            # Draw text on top of blurred background
+            cv2.putText(img, text, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
+        
 
     # Convert image to bytes
     _, buffer = cv2.imencode('.jpg', img)

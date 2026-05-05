@@ -214,4 +214,12 @@
       transform: scale(1);
       transition: transform 0.2s ease;
     }
-    
+    #progress-container {
+      width: 100%;
+      background: #e9ecef;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+    #progress-bar {
+      border-radius: 5px;
+    }

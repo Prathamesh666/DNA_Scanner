@@ -11,6 +11,15 @@
   <!-- Bootstrap JS Bundle (includes Popper) -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SP030NTCPZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+  
+    gtag('config', 'G-SP030NTCPZ');
+  </script>
 </head>
 <body>
   <!-- Popup Modal (appears before detection starts) -->
@@ -51,7 +60,7 @@
     <div class="header-wrapper">
       <div class="header-container">
         <h1 class="header-title">DNA Analyzer</h1>
-        <p class="header-subtitle">Age • Gender • Emotion Detection By Face Recognition</p>
+        <p class="header-subtitle">Age • Gender • Emotion & Race Detection By Face Recognition</p>
         <p class="subtitle">Upload an image or use your webcam to analyze faces in real-time.</p>
       </div>
     </div>
@@ -75,6 +84,14 @@
 
       <section class="card">
         <h2 class="card-title">Results</h2>
+        <div id="progress-container" style="display:none;">
+          <div id="progress-bar" style="
+            width:0%;
+            height:20px;
+            background:#007bff;
+            transition: width 0.3s ease;">
+          </div>
+        </div>
         <div id="results"></div>
       </section>
     </main>
@@ -90,7 +107,7 @@
       </div>
     </div>
   </div>
-  <!-- Static Notice Box (always visible under header) -->
+  <!-- Static Notice Box -->
   <div class="header-wrapper"><center>
     <div class="notice-container">
       <h2>⚠️ Important Notice</h2>
@@ -99,10 +116,11 @@
         Results are probabilistic estimates, not absolute truths.
       </p>
       <ul>
-        <li>Upload clear, well-lit images with unobstructed faces.</li>
+        <li>Avoid blury & upload clear, well-lit images with unobstructed faces.</li>
         <li>Ensure the face is front-facing and visible.</li>
         <li>Be in your <strong>true, original mood</strong> — acting or exaggerating emotions may reduce accuracy.</li>
         <li>Use stable lighting for webcam detection.</li>
+        <li>Accuracy of Result increases from teenagers to middle-aged adults, and may be less accurate for children aged less than 16 and elderly aged more than 60.</li>
         <li>Interpret results responsibly; this app is for educational/entertainment & demonstration purposes only.</li>
       </ul>
     </div></center>
@@ -154,7 +172,9 @@
           const formData = new FormData();
           formData.append("image", blob, "webcam.jpg");
           try {
-            const res = await fetch("/detect", { method: "POST", body: formData });
+            const interval = startProgress();
+            const res = await fetch('/detect', { method: 'POST', body: formData });
+            finishProgress(interval);
             if (!res.ok) throw new Error(`Server returned ${res.status}`);
             const imgBlob = await res.blob();
             const url = URL.createObjectURL(imgBlob);
@@ -170,7 +190,9 @@
         e.preventDefault();
         const formData = new FormData(uploadForm);
         try {
+          const interval = startProgress();
           const res = await fetch('/detect', { method: 'POST', body: formData });
+          finishProgress(interval);
           if (!res.ok) throw new Error(`Server returned ${res.status}`);
           const blob = await res.blob();
           const url = URL.createObjectURL(blob);
@@ -195,6 +217,33 @@
       }
       document.getElementById("notice-modal").style.display = "none";
     }
+
+    function startProgress() {
+      const container = document.getElementById("progress-container");
+      const bar = document.getElementById("progress-bar");
+      container.style.display = "block";
+      bar.style.width = "0%";
+    
+      let progress = 0;
+      const interval = setInterval(() => {
+        if (progress < 90) { // stop at 90% until response
+          progress += 10;
+          bar.style.width = progress + "%";
+        }
+      }, 300);
+    
+      return interval;
+    }
+    
+    function finishProgress(interval) {
+      clearInterval(interval);
+      const bar = document.getElementById("progress-bar");
+      bar.style.width = "100%";
+      setTimeout(() => {
+        document.getElementById("progress-container").style.display = "none";
+      }, 500);
+    }
+    
     // Example function to inject analyzed image
     function showAnalyzedImage(url) {
       const resultsEl = document.getElementById("results");
