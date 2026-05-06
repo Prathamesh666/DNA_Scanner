@@ -15,12 +15,13 @@ app.register_blueprint(detect_route)
 def index():
     return render_template('index.html')
 
+    
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory(os.path.dirname(__file__), 'sitemap.xml')
+
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))              # Render sets PORT automatically
     app.run(host="0.0.0.0", port=port, debug=False)
     #app.run(host="0.0.0.0", port=443, ssl_context=("/etc/ssl/certs/dna-scanner.crt", "/etc/ssl/private/dna-scanner.key"))
     #app.run(debug=True)
-    
-@app.route('/sitemap.xml')
-def sitemap():
-    return send_from_directory(os.path.dirname(__file__), 'sitemap.xml')
