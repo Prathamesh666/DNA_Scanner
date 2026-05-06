@@ -15,7 +15,6 @@ app.register_blueprint(detect_route)
 def index():
     return render_template('index.html')
 
-    
 @app.route('/sitemap.xml')
 def sitemap():
     return send_from_directory(os.path.dirname(__file__), 'sitemap.xml')
