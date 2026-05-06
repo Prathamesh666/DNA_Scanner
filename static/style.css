@@ -11,6 +11,12 @@
       --shadow-1: 0 10px 30px rgba(0,0,0,0.35);
       --shadow-2: 0 30px 60px rgba(0,0,0,0.45);
     }
+    .header-logo {
+      height: auto; 
+      width: 90px; 
+      vertical-align: middle; 
+      filter: drop-shadow(0 0 6px #fe2600);
+    }
     body {
       margin: 0;
       font-family: Inter, system-ui, sans-serif;
@@ -24,6 +30,7 @@
     .header-wrapper {
       width: 100%;          /* full width wrapper */
       text-align: center;   /* centers inline-block children */
+      filter: drop-shadow(0 0 6px #fb2803);
     }
     .header-container {
       background: rgba(255, 255, 255, 0.1); /* glassmorphism layer */
@@ -58,6 +65,7 @@
       color: #ffffff;
       opacity: 0.9;
       margin-top: 8px;
+      filter: drop-shadow(0 0 6px #fe2600);
     }
     .subtitle {
       font-family: 'Roboto', sans-serif;
@@ -81,10 +89,12 @@
     .card:hover {
       transform: rotateX(3deg) rotateY(-3deg) translateZ(18px);
       box-shadow: var(--shadow-2);
+      filter: drop-shadow(0 0 6px #42ff55);
     }
     .card-title {
       margin-bottom: 12px;
       font-weight: 600;
+      filter: drop-shadow(0 0 6px #fefa00);
     }
     .btn {
       display: inline-block;
@@ -96,9 +106,9 @@
       font-weight: 600;
       color: #0b0f17;
     }
-    .btn-primary { background: var(--primary); }
-    .btn-secondary { background: var(--secondary); }
-    .btn-accent { background: var(--accent); }
+    .btn-primary { background: var(--primary); filter: drop-shadow(0 0 6px #f41fdf);}
+    .btn-secondary { background: var(--secondary); filter: drop-shadow(0 0 6px #fe2600);}
+    .btn-accent { background: var(--accent); filter: drop-shadow(0 0 6px #f41fdf);}
     #camera, #results img {
       margin-top: 20px;
       border: 2px solid #ccc;

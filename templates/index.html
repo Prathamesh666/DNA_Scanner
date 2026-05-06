@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
   <title>Age-Gender-Emotion Detection</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -59,7 +60,7 @@
   <div class="scene">
     <div class="header-wrapper">
       <div class="header-container">
-        <h1 class="header-title">DNA Analyzer</h1>
+        <h1 class="header-title"><img src="{{ url_for('static', filename='Symbol.png') }}" alt="Symbol" class="header-logo">DNA Analyzer Studio</h1>
         <p class="header-subtitle">Age • Gender • Emotion & Race Detection By Face Recognition</p>
         <p class="subtitle">Upload an image or use your webcam to analyze faces in real-time.</p>
       </div>
@@ -96,7 +97,7 @@
       </section>
     </main>
   </div>
-  
+
   <!-- Bootstrap Modal -->
   <div class="modal fade" id="imageModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
