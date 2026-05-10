@@ -83,4 +83,4 @@ def detect():
             cv2.putText(img, text, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
     # Convert image to bytes
     _, buffer = cv2.imencode('.jpg', img)
-    return send_file(BytesIO(buffer), mimetype='image/jpeg')
+    return send_file(BytesIO(buffer), mimetype='image/jpeg', as_attachment=False, download_name='result.jpg')
