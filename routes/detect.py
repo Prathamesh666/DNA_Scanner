@@ -54,12 +54,6 @@ def detect():
         # Define line spacing
         line_height = 12
 
-        # Draw each line above the rectangle
-        #cv2.putText(img, race_text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
-        #cv2.putText(img, emotion_text, (x, y - 10 - line_height), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
-        #cv2.putText(img, gender_text, (x, y - 10 - 2 * line_height), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
-        #cv2.putText(img, age_text, (x, y - 10 - 3 * line_height), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
-
         # Prepare text lines
         lines = [race_text, emotion_text, gender_text, age_text]
         
@@ -87,8 +81,6 @@ def detect():
         
             # Draw text on top of blurred background
             cv2.putText(img, text, (text_x, text_y), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 0, 0), 1)
-        
-
     # Convert image to bytes
     _, buffer = cv2.imencode('.jpg', img)
     return send_file(BytesIO(buffer), mimetype='image/jpeg')
