@@ -3,8 +3,43 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
-  <title>Age-Gender-Emotion Detection</title>
+  <title>Age-Gender-Emotion & Race Detection Tool</title>
+  <!-- Site Symbol (Favicon) -->
+  <link rel="shortcut icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
+  
+  <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" sizes="64x64" type="image/png">
+  <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" sizes="128x128" type="image/png">
+  <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" sizes="192x192" type="image/png">
+  <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" sizes="512x512" type="image/png">
+  
+  <!-- Apple Touch Icon -->
+  <link rel="apple-touch-icon" href="{{ url_for('static', filename='logo.png') }}">
+  
+  <!-- SEO Metadata -->
+  <title>DNA Analyzer | Age-Gender-Emotion & Race Detection Tool</title>
+  <meta name="description" content="AI-powered DNA Analyzer for detecting age, gender, emotion, and race from facial recognition.">
+  <meta name="keywords" content="DNA Analyzer, Age detection, Gender detection, Emotion recognition, Race detection, AI facial analysis">
+  <meta name="author" content="DNA Analyzer">
+  <meta name="robots" content="index, follow">
+  
+  <!-- Extra Site name -->
+  <meta name="application-name" content="DNA Analyzer">
+  <meta property="og:site_name" content="DNA Analyzer">
+  
+  <!-- Open Graph (Facebook, LinkedIn, WhatsApp) -->
+  <meta property="og:title" content="DNA Analyzer | Age-Gender-Emotion & Race Detection Tool">
+  <meta property="og:description" content="Analyze age, gender, emotion, and race with AI-powered DNA Analyzer. Free online detection tool.">
+  <meta property="og:image" content="{{ url_for('static', filename='logo.png') }}">
+  <meta property="og:url" content="https://dna-analyzer.duckdns.org">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_IN">
+  
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="DNA Analyzer">
+  <meta name="twitter:description" content="AI-powered Age, Gender, Emotion & Race Detection Tool.">
+  <meta name="twitter:image" content="{{ url_for('static', filename='logo.png') }}">
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -14,6 +49,102 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-SP030NTCPZ"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "DNA Analyzer",
+        "url": "https://dna-analyzer.duckdns.org",
+        "applicationCategory": "AI Tool",
+        "operatingSystem": "Web",
+        "description": "AI-powered DNA Analyzer for detecting age, gender, emotion, and race from facial recognition.",
+        "inLanguage": "en",
+        "image": "https://dna-analyzer.duckdns.org/static/Symbol.png",
+        "author": {
+          "@type": "Organization",
+          "name": "DNA Analyzer"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD",
+          "category": "Free Tool"
+        },
+        "browserRequirements": "Requires modern web browser with JavaScript enabled",
+        "softwareVersion": "1.0.0",
+        "featureList": [
+          "Age detection",
+          "Gender detection",
+          "Emotion recognition",
+          "Race detection"
+        ],
+        "keywords": "DNA Analyzer, Age detection, Gender detection, Emotion recognition, Race detection, AI facial analysis"
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is DNA Analyzer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "DNA Analyzer is an AI-powered web application that detects age, gender, emotion, and race from facial recognition."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is DNA Analyzer free to use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, DNA Analyzer is a free online tool available to anyone with a modern web browser."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How accurate is DNA Analyzer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "DNA Analyzer provides approximate predictions based on AI models. Results should be interpreted as estimates, not absolute truths."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What features does DNA Analyzer offer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The tool can analyze facial images to predict age, gender, emotion, and race, offering insights into human characteristics."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do I need to install software to use DNA Analyzer?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No installation is required. DNA Analyzer runs directly in your browser at https://dna-analyzer.duckdns.org."
+            }
+          }
+          {
+            "@type": "Question",
+            "name": "How DNA Analyzer predicts?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "DNA Analyzer processes images on the server for analysis. It uses AI models trained on facial datasets to generate predictions based on visual features. Depends on the quality of input image and model limitations, results may vary and should be interpreted with caution."
+            }
+          }
+          {
+            "@type": "Question",
+            "name": "On what basis DNA Analyzer predicts by facial recognition?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Dna Analyzer predictions are based on visual features extracted from facial images, such as wrinkles, facial structure, skin texture, and other cues that may correlate with age, gender, emotion, and race. The results are based on the patterns learned by the AI models from training data, and should be considered as estimates rather than definitive classifications."
+          }
+        ]
+      }
+    ]
+  }
+  </script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
@@ -111,6 +242,57 @@
     </div>
   </div>
 
+  <!-- Trigger Button -->
+  <center><button id="openModalBtn" class="btn btn-tertiary">View Insights</button></center>
+
+  <!-- Modal -->
+  <div id="predictionModal" class="custom-modal">
+    <div class="custom-modal-content">
+      
+      <!-- Modal Header -->
+      <div class="custom-modal-header">
+        <center><h2>Insights for prediction results</h2></center>
+        <span class="close-btn" id="closeModalBtn">&times;</span>
+      </div>
+      <hr> 
+      <!-- Modal Body -->
+      <div class="custom-modal-body">
+        <div class="modal-grid">
+          
+          <!-- Column 1 -->
+          <div class="modal-column">
+            <h3 class="title prediction">🧩 Major Bases of Prediction</h3>
+            <ul class="fancy-list">
+              <li><span class="bullet">🧠</span>Psychological State:– mood stability, stress levels, emotional authenticity</li>
+              <li><span class="bullet">🧍</span>Behavioral Patterns:– daily habits, posture, micro-expressions, decision-making tendencies</li>
+              <li><span class="bullet">🍎</span>Lifestyle Choices:– diet quality, sleep rhythm, physical activity, hydration</li>
+              <li><span class="bullet">💬</span>Social & Environmental Context:– exposure to light, surroundings, cultural/social interactions</li>
+              <li><span class="bullet">💼</span>Cognitive & Professional Balance:– workload, burnout risk, focus consistency</li>
+              <li><span class="bullet">💓</span>Physiological Indicators:– skin tone variation, facial tension, fatigue markers</li>
+              <li><span class="bullet">🌱</span>Mind-Body Alignment:– mindfulness, emotional regulation, self-awareness</li>
+            </ul>
+          </div>
+          
+          <!-- Column 2 -->
+          <div class="modal-column">
+            <h3 class="title solutions">🌟 Positive Solutions for Health & Wealth Harmony</h3>
+            <ul class="fancy-list">
+              <li><span class="bullet">💫</span> Practice mindful breathing and emotional honesty</li>
+              <li><span class="bullet">🍀</span> Maintain nutritional balance and hydration</li>
+              <li><span class="bullet">😴</span> Prioritize sleep hygiene and regular movement</li>
+              <li><span class="bullet">💞</span> Cultivate positive social connections</li>
+              <li><span class="bullet">🎨</span> Manage stress through creative or reflective outlets</li>
+              <li><span class="bullet">🧘</span> Keep your work-life rhythm balanced</li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+  
+
+    
   <!-- Static Notice Box -->
   <div class="header-wrapper"><center>
     <div class="notice-container">
@@ -138,9 +320,13 @@
       const captureBtn = document.getElementById('captureBtn');
       const resultsEl = document.getElementById('results');
       const uploadForm = document.getElementById('uploadForm');
+      const openBtn = document.getElementById('openModalBtn'); // trigger button
       let webcamActive = false;
       let stream = null;
-      
+  
+      // Hide trigger button initially
+      openBtn.style.display = "none";
+  
       toggleBtn.addEventListener("click", async () => {
         if (!webcamActive) {
           try {
@@ -164,14 +350,14 @@
           webcamActive = false;
         }
       });
-      
+  
       captureBtn.addEventListener("click", async () => {
         if (!webcamActive) return;
         const canvas = document.createElement("canvas");
         canvas.width = cameraEl.videoWidth;
         canvas.height = cameraEl.videoHeight;
         canvas.getContext("2d").drawImage(cameraEl, 0, 0);
-      
+  
         canvas.toBlob(async (blob) => {
           const formData = new FormData();
           formData.append("image", blob, "webcam.jpg");
@@ -182,14 +368,13 @@
             if (!res.ok) throw new Error(`Server returned ${res.status}`);
             const imgBlob = await res.blob();
             const url = URL.createObjectURL(imgBlob);
-            //resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" class="img-thumbnail"/>`;
             showAnalyzedImage(url);
           } catch (err) {
             console.error(err);
           }
         }, "image/jpeg");
       });
-
+  
       uploadForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(uploadForm);
@@ -200,45 +385,30 @@
           if (!res.ok) throw new Error(`Server returned ${res.status}`);
           const blob = await res.blob();
           const url = URL.createObjectURL(blob);
-          //resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" />`;
-          //resultsEl.innerHTML = `<img src="${url}" alt="Detected Faces" class="img-thumbnail" style="cursor: zoom-in;" data-bs-toggle="modal" data-bs-target="#imageModal" data-full="${url}"/>`;
-          showAnalyzedImage(url); // Use the function to display results with zoomable modal
+          showAnalyzedImage(url);
         } catch (err) {
           console.error(err);
         }
       });
     });
-    // Show modal before detection
-    function showNotice() {
-      if (!localStorage.getItem("skipNotice")) {
-        document.getElementById("notice-modal").style.display = "block";
-      }
-    }
-
-    function closeNotice() {
-      if (document.getElementById("dont-show-again").checked) {
-        localStorage.setItem("skipNotice", "true");
-      }
-      document.getElementById("notice-modal").style.display = "none";
-    }
-
+  
     function startProgress() {
       const container = document.getElementById("progress-container");
       const bar = document.getElementById("progress-bar");
       container.style.display = "block";
       bar.style.width = "0%";
-    
+  
       let progress = 0;
       const interval = setInterval(() => {
-        if (progress < 90) { // stop at 90% until response
+        if (progress < 90) {
           progress += 10;
           bar.style.width = progress + "%";
         }
       }, 300);
-    
+  
       return interval;
     }
-    
+  
     function finishProgress(interval) {
       clearInterval(interval);
       const bar = document.getElementById("progress-bar");
@@ -247,55 +417,39 @@
         document.getElementById("progress-container").style.display = "none";
       }, 500);
     }
-    
-    // Example function to inject analyzed image
+  
+    // Show analyzed image and reveal trigger button
     function showAnalyzedImage(url) {
       const resultsEl = document.getElementById("results");
       resultsEl.innerHTML = `
         <img src="${url}" alt="Detected Faces" class="img-thumbnail"
             style="cursor: zoom-in;"
-            data-bs-toggle="modal"
-            data-bs-target="#imageModal"
             data-full="${url}"/>`;
-
-      // Bind click to update modal image
+  
       const img = resultsEl.querySelector("img");
       img.addEventListener("click", () => {
         const modalImage = document.getElementById("modalImage");
         modalImage.src = img.getAttribute("data-full");
       });
+  
+      // Reveal the trigger button for prediction modal
+      document.getElementById("openModalBtn").style.display = "inline-block";
     }
-    
-    const modalImage = document.getElementById("modalImage");
-    let scale = 1, originX = 0, originY = 0, isDragging = false, startX, startY;
-    
-    modalImage.addEventListener("wheel", e => {
-      e.preventDefault();
-      scale += e.deltaY * -0.001;
-      scale = Math.min(Math.max(.5, scale), 5); // clamp zoom
-      modalImage.style.transform = `scale(${scale}) translate(${originX}px, ${originY}px)`;
-    });
-    
-    modalImage.addEventListener("mousedown", e => {
-      isDragging = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      modalImage.style.cursor = "grabbing";
-    });
-    
-    window.addEventListener("mouseup", () => {
-      isDragging = false;
-      modalImage.style.cursor = "grab";
-    });
-    
-    window.addEventListener("mousemove", e => {
-      if (!isDragging) return;
-      originX += (e.clientX - startX) / scale;
-      originY += (e.clientY - startY) / scale;
-      startX = e.clientX;
-      startY = e.clientY;
-      modalImage.style.transform = `scale(${scale}) translate(${originX}px, ${originY}px)`;
-    });
+  
+    // Prediction modal logic
+    const modal = document.getElementById("predictionModal");
+    const openBtn = document.getElementById("openModalBtn");
+    const closeBtn = document.getElementById("closeModalBtn");
+  
+    openBtn.onclick = () => { modal.style.display = "block"; };
+    closeBtn.onclick = () => { modal.style.display = "none"; };
+  
+    window.onclick = (event) => {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    };
   </script>
+  
 </body>
 </html>
