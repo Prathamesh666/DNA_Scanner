@@ -263,7 +263,7 @@
       background: rgba(255, 255, 255, 0.1); /* glassmorphism layer */
     }
     .custom-modal:hover {
-      transform: rotateX(3deg) rotateY(+3deg) translateZ(18px);
+      transform: translateZ(18px);
       background: rgba(255, 255, 255, 0.15); /* slightly stronger on hover */
     }
     /* Modal content */
