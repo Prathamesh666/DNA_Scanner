@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Age-Gender-Emotion & Race Detection Tool</title>
+  <title>Age-Gender-Emotion & Race Detection By Face Recognition Tool</title>
   <!-- Site Symbol (Favicon) -->
   <link rel="shortcut icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
   
@@ -391,6 +391,20 @@
         }
       });
     });
+
+    // Show modal before detection
+    function showNotice() {
+      if (!localStorage.getItem("skipNotice")) {
+        document.getElementById("notice-modal").style.display = "block";
+      }
+    }
+
+    function closeNotice() {
+      if (document.getElementById("dont-show-again").checked) {
+        localStorage.setItem("skipNotice", "true");
+      }
+      document.getElementById("notice-modal").style.display = "none";
+    }
   
     function startProgress() {
       const container = document.getElementById("progress-container");
@@ -423,7 +437,7 @@
       const resultsEl = document.getElementById("results");
       resultsEl.innerHTML = `
         <img src="${url}" alt="Detected Faces" class="img-thumbnail"
-            style="cursor: zoom-in;"
+            style="cursor: zoom-in;" data-bs-toggle="modal" data-bs-target="#imageModal"
             data-full="${url}"/>`;
   
       const img = resultsEl.querySelector("img");
@@ -449,6 +463,37 @@
         modal.style.display = "none";
       }
     };
+
+    const modalImage = document.getElementById("modalImage");
+    let scale = 1, originX = 0, originY = 0, isDragging = false, startX, startY;
+    
+    modalImage.addEventListener("wheel", e => {
+      e.preventDefault();
+      scale += e.deltaY * -0.001;
+      scale = Math.min(Math.max(.5, scale), 5); // clamp zoom
+      modalImage.style.transform = `scale(${scale}) translate(${originX}px, ${originY}px)`;
+    });
+    
+    modalImage.addEventListener("mousedown", e => {
+      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      modalImage.style.cursor = "grabbing";
+    });
+    
+    window.addEventListener("mouseup", () => {
+      isDragging = false;
+      modalImage.style.cursor = "grab";
+    });
+    
+    window.addEventListener("mousemove", e => {
+      if (!isDragging) return;
+      originX += (e.clientX - startX) / scale;
+      originY += (e.clientY - startY) / scale;
+      startX = e.clientX;
+      startY = e.clientY;
+      modalImage.style.transform = `scale(${scale}) translate(${originX}px, ${originY}px)`;
+    });
   </script>
   
 </body>
