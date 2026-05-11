@@ -1,23 +1,31 @@
 #!/bin/bash
 # Ezerhost VPS Deployment Script for Flask + DeepFace (DNA_Scanner repo)
-# Updated for HTTPS + Gunicorn systemd automation
+# Beginner-proof version with venv creation + non-root user
 
 APP_DIR=/root/DNA_Scanner
 APP_MODULE=main:app
+DEPLOY_USER=www-data   # safer than root
 
 # Update system
 sudo apt update && sudo apt upgrade -y
 
 # Install essentials
-sudo apt install -y python3 python3-pip git nginx certbot python3-certbot-nginx
+sudo apt install -y python3 python3-pip python3-venv git nginx certbot python3-certbot-nginx
 
 # Clone repo if not present
 if [ ! -d "$APP_DIR" ]; then
-    git clone https://github.com/Prathamesh666/DNA_Scanner.git $APP_DIR
+    sudo git clone https://github.com/Prathamesh666/DNA_Scanner.git $APP_DIR
 fi
 
-# Install Python dependencies
-pip3 install -r $APP_DIR/requirements.txt
+# Create virtual environment if not exists
+if [ ! -d "$APP_DIR/venv" ]; then
+    sudo python3 -m venv $APP_DIR/venv
+fi
+
+# Activate venv and install dependencies
+source $APP_DIR/venv/bin/activate
+pip install --upgrade pip
+pip install -r $APP_DIR/requirements.txt
 
 # Create Gunicorn systemd service
 SERVICE_FILE=/etc/systemd/system/gunicorn.service
@@ -27,10 +35,11 @@ Description=Gunicorn instance for DNA_Scanner Flask app
 After=network.target
 
 [Service]
-User=root
+User=$DEPLOY_USER
+Group=$DEPLOY_USER
 WorkingDirectory=$APP_DIR
 Environment="PATH=$APP_DIR/venv/bin"
-ExecStart=$APP_DIR/venv/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 $APP_MODULE
+ExecStart=$APP_DIR/venv/bin/gunicorn --workers 1 --threads 8 --worker-class gthread --preload --timeout 180 --bind 127.0.0.1:8000 $APP_MODULE
 Restart=always
 RestartSec=5
 
@@ -76,5 +85,6 @@ sudo nginx -t && sudo systemctl reload nginx
 # Issue Let's Encrypt certificate (only first time)
 sudo certbot --nginx -d dna-analyzer.duckdns.org --non-interactive --agree-tos -m your-email@example.com
 
-echo "✅ Deployment complete. Your app is live at https://dna-analyzer.duckdns.org" 
+echo "✅ Deployment complete. Your app is live at https://dna-analyzer.duckdns.org"
+
 echo "Note: Used DuckDNS Website for free domain and SSL certificate. You can replace it with your own domain if you have one."

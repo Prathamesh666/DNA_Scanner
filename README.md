@@ -1,7 +1,7 @@
-# DNA Analyzer – Age • Gender • Emotion Detection
+# DNA Analyzer – Age • Gender • Emotion • Race Detection
 
 ## 📖 Overview
-**DNA Analyzer** is a web application that uses **AI-powered face recognition** to detect **Age, Gender, and Emotion** in real-time.  
+**DNA Analyzer** is a web application that uses **AI-powered face recognition** to detect **Age, Gender, Emotion & Race** in real-time.  
 The app combines a futuristic **DNA-inspired UI** with computer vision models, allowing users to upload an image or use their webcam for instant analysis.
 
 ---
@@ -25,33 +25,86 @@ The app combines a futuristic **DNA-inspired UI** with computer vision models, a
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Getting Started with localhost 
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/Prathamesh666/DNA-Analyzer
-cd dna-analyzer
+git clone https://github.com/Prathamesh666/DNA_Scanner
+cd DNA_Scanner
 ```
 ### 2. Install the requirements
-```pip install -r requirements.txt
+```bash
+pip install -r requirements.txt
 ```
 
 ### 3. Run the Web App
-```python main.py
+```bash
+python main.py
 ```
 
 The app will be available at:
 http://localhost:5000 (Flask) 
 
+**Note:** Webcame feature may not work on localhost. 
+
+**Option 1:** You will need to deploy using an instance having VPS Hosting (I used Ezerhost SM 50 VPS Hosting: Self Managed) or render deploy with 1.8GB+ (2GB) RAM for AI models [often expensive about 25$/month and 1 CPU which might work slower].
+
+**Option 2:** Remove the <Video> line in Live web-came section (HTML) & Replace the existing related javascript code **(From line 331 to 377 in `index.html`**) with the given one below to work it in your localhost
+'''javascript
+toggleBtn.addEventListener('click', () => {
+        if (!webcamActive) {
+          Webcam.set({ width: 320, height: 240, image_format: 'jpeg', jpeg_quality: 90 });
+          Webcam.attach('#camera');
+          cameraEl.style.display = 'block';
+          captureBtn.style.display = 'inline-block';
+          toggleBtn.textContent = 'Stop Webcam';
+          webcamActive = true;
+        } else {
+          Webcam.reset();
+          cameraEl.style.display = 'none';
+          captureBtn.style.display = 'none';
+          toggleBtn.textContent = 'Start Webcam';
+          webcamActive = false;
+        }
+      });
+
+      captureBtn.addEventListener('click', async () => {
+        if (!webcamActive) return;
+        Webcam.snap(async (data_uri) => {
+          try {
+            const blob = await (await fetch(data_uri)).blob();
+            const formData = new FormData();
+            formData.append('image', blob, 'webcam.jpg');
+            const res = await fetch('/detect', { method: 'POST', body: formData });
+            if (!res.ok) throw new Error(`Server returned ${res.status}`);
+            const imgBlob = await res.blob();
+            const url = URL.createObjectURL(imgBlob);
+            showAnalyzedImage(url); // Use the function to display results with zoomable modal
+            // Optionally call onEmotionDetected if server returns emotion in headers or JSON
+            // Example: const json = await res.json(); if (json.emotion) window.onEmotionDetected(json.emotion);
+          } catch (err) {
+            console.error(err);
+          }
+        });
+      });
+'''
+
 ## 📂 Project Structure
 ```
-dna-analyzer/
-│── static/              # CSS, JS, videos
-│── templates/           # HTML templates
-│── models/              # Pre-trained AI models
-│── app.py               # Main backend script
+DNA_Scanner/
+│── routes/              # Core backend file: detect.py
+│── static/              # CSS, JS, videos & logos
+│── templates/           # HTML template
+│── .python-version      # For Render Deploy (3.10.9)
+│── deploy.sh            # For Ezerhost SM 50 (Self Managed) Instance Deployment
+│── main.py              # Main backend script
+│── README.md            # Reasearch Paper
 │── requirements.txt     # Python dependencies
 │── README.md            # Project documentation
+│── redeploy.sh          # For Redeployment of latest push updates
+│── render.yaml          # For render deploy (Optional)
+│── robots.txt           # For Robots of Google Search Console (SEO)
+│── sitemap.xml          # For Google Search Console (SEO)
 ```
 
 🎬 Usage
@@ -83,5 +136,5 @@ Results are **probabilistic estimates**, not absolute truths. Accuracy depends o
 
 ---
 
-**Disclaimer:** This application is intended for **educational and demonstration purposes only**.  
+**Disclaimer:** This application is intended for **educational/entertainment and demonstration purposes only**.  
 It does not replace professional analysis or judgment. Always interpret results responsibly.
